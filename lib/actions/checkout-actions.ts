@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCart, saveCart } from "@/lib/cart";
 import { getCustomerSession } from "@/lib/auth";
+import { sendOrderNotificationEmail } from "@/lib/email";
 
 export async function placeOrder(_prevState: { error: string } | undefined, formData: FormData) {
   const cart = getCart();
@@ -69,6 +70,20 @@ export async function placeOrder(_prevState: { error: string } | undefined, form
     }
 
     return newOrder;
+  });
+
+  await sendOrderNotificationEmail({
+    orderId: order.id,
+    guestName: name,
+    guestPhone: phone,
+    guestEmail: email || null,
+    deliveryAddress: address,
+    totalAmount: total,
+    items: items.map((i) => ({
+      productName: i.product.name,
+      quantity: i.qty,
+      priceAtPurchase: i.product.price.toString(),
+    })),
   });
 
   saveCart({});
