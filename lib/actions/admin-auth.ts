@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { createAdminSession, clearAdminSession } from "@/lib/auth";
 
-export async function setupFirstAdmin(_prevState: { error: string }, formData: FormData) {
+export async function setupFirstAdmin(_prevState: { error: string } | undefined, formData: FormData) {
   const adminCount = await prisma.admin.count();
   if (adminCount > 0) {
     return { error: "Setup already completed. An admin account already exists." };
