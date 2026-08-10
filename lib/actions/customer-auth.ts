@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { createCustomerSession, clearCustomerSession } from "@/lib/auth";
 
-export async function registerCustomer(_prevState: { error: string }, formData: FormData) {
+export async function registerCustomer(_prevState: { error: string } | undefined, formData: FormData) {
   const fullName = String(formData.get("full_name") || "").trim();
   const email = String(formData.get("email") || "").trim();
   const phone = String(formData.get("phone") || "").trim();
@@ -29,7 +29,7 @@ export async function registerCustomer(_prevState: { error: string }, formData: 
   redirect("/");
 }
 
-export async function loginCustomer(_prevState: { error: string }, formData: FormData) {
+export async function loginCustomer(_prevState: { error: string }| undefined , formData: FormData) {
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
 
