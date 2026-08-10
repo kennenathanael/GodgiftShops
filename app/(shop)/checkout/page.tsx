@@ -5,7 +5,7 @@ import { getDict } from "@/lib/i18n";
 import { formatPrice } from "@/lib/utils";
 import { getCart } from "@/lib/cart";
 import { getCustomerSession } from "@/lib/auth";
-import { placeOrder } from "@/lib/actions/checkout-actions";
+import CheckoutForm from "./CheckoutForm";
 
 export const dynamic = "force-dynamic";
 
@@ -59,22 +59,7 @@ export default async function CheckoutPage() {
               — {dict.login_faster}
             </p>
           )}
-          <form action={placeOrder} className="space-y-4">
-            <input
-              type="text"
-              name="name"
-              placeholder={dict.full_name}
-              required
-              defaultValue={session?.name || ""}
-              className="w-full border rounded-lg px-3 py-2"
-            />
-            <input type="text" name="phone" placeholder={dict.phone_number} required className="w-full border rounded-lg px-3 py-2" />
-            <input type="email" name="email" placeholder={dict.email_optional} className="w-full border rounded-lg px-3 py-2" />
-            <textarea name="address" placeholder={dict.delivery_address} required rows={3} className="w-full border rounded-lg px-3 py-2" />
-            <button type="submit" className="w-full bg-brand hover:bg-brand-dark text-white py-3 rounded-lg font-semibold">
-              {dict.place_order}
-            </button>
-          </form>
+          <CheckoutForm dict={dict} defaultName={session?.name || ""} />
         </div>
       </div>
     </>
