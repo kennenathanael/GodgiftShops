@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getCart, saveCart } from "@/lib/cart";
 import { getCustomerSession } from "@/lib/auth";
 
-export async function placeOrder(_prevState: { error: string }, formData: FormData) {
+export async function placeOrder(_prevState: { error: string } | undefined, formData: FormData) {
   const cart = getCart();
   const productIds = Object.keys(cart).map((id) => parseInt(id, 10));
 
