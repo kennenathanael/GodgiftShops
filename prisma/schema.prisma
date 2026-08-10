@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  STAFF
+}
+
+enum NewOverride {
+  AUTO
+  YES
+  NO
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Admin {
+  id        Int           @id @default(autoincrement())
+  fullName  String
+  email     String        @unique
+  password  String
+  role      AdminRole     @default(STAFF)
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  products  Product[]
+  logs      ActivityLog[]
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  fullName  String
+  email     String   @unique
+  phone     String?
+  password  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  orders    Order[]
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  products    Product[]
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  categoryId    Int
+  category      Category    @relation(fields: [categoryId], references: [id])
+  name          String
+  slug          String      @unique
+  description   String?
+  price         Decimal     @db.Decimal(10, 2)
+  stockQuantity Int         @default(0)
+  image         String?
+  isFeatured    Boolean     @default(false)
+  newOverride   NewOverride @default(AUTO)
+  createdById   Int?
+  createdBy     Admin?      @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  orderItems    OrderItem[]
+}
+
+model Order {
+  id               Int         @id @default(autoincrement())
+  customerId       Int?
+  customer         Customer?   @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  guestName        String
+  guestPhone       String
+  guestEmail       String?
+  deliveryAddress  String
+  totalAmount      Decimal     @db.Decimal(10, 2)
+  status           OrderStatus @default(PENDING)
+  paymentMethod    String      @default("cod")
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  items            OrderItem[]
+}
+
+model OrderItem {
+  id              Int     @id @default(autoincrement())
+  orderId         Int
+  order           Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       Int
+  product         Product @relation(fields: [productId], references: [id])
+  productName     String
+  priceAtPurchase Decimal @db.Decimal(10, 2)
+  quantity        Int
+}
+
+model ActivityLog {
+  id         Int      @id @default(autoincrement())
+  adminId    Int?
+  admin      Admin?   @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  action     String
+  targetType String?
+  targetId   Int?
+  createdAt  DateTime @default(now())
+}
+
+model Setting {
+  key   String @id
+  value String
+}
