@@ -22,7 +22,7 @@ async function uploadImageIfProvided(formData: FormData): Promise<string | undef
   return blob.url;
 }
 
-export async function createProduct(_prevState: { error: string }, formData: FormData) {
+export async function createProduct(_prevState: { error: string } | undefined , formData: FormData) {
   const admin = await requireAdmin();
 
   const name = String(formData.get("name") || "").trim();
@@ -63,7 +63,7 @@ export async function createProduct(_prevState: { error: string }, formData: For
   redirect("/admin/products");
 }
 
-export async function updateProduct(productId: number, _prevState: { error: string }, formData: FormData) {
+export async function updateProduct(productId: number, _prevState: { error: string } | undefined , formData: FormData) {
   const admin = await requireAdmin();
 
   const name = String(formData.get("name") || "").trim();
