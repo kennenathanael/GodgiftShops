@@ -13,7 +13,7 @@ async function requireSuperAdmin() {
   return session;
 }
 
-export async function createAdminAccount(_prevState: { error: string }, formData: FormData) {
+export async function createAdminAccount(_prevState: { error: string }| undefined, formData: FormData) {
   const admin = await requireSuperAdmin();
 
   const fullName = String(formData.get("full_name") || "").trim();
