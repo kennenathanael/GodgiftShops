@@ -12,7 +12,7 @@ async function requireAdmin() {
   return session;
 }
 
-export async function createCategory(_prevState: { error: string }, formData: FormData) {
+export async function createCategory(_prevState: { error: string } | undefined, formData: FormData) {
   const admin = await requireAdmin();
   const name = String(formData.get("name") || "").trim();
   const description = String(formData.get("description") || "").trim();
@@ -31,7 +31,7 @@ export async function createCategory(_prevState: { error: string }, formData: Fo
   revalidatePath("/admin/categories");
 }
 
-export async function updateCategory(categoryId: number, _prevState: { error: string }, formData: FormData) {
+export async function updateCategory(categoryId: number, _prevState: { error: string } | undefined, formData: FormData) {
   const admin = await requireAdmin();
   const name = String(formData.get("name") || "").trim();
   const description = String(formData.get("description") || "").trim();
