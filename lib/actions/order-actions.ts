@@ -17,7 +17,9 @@ export async function updateOrderStatus(orderId: number, formData: FormData) {
   const admin = await requireAdmin();
   const status = String(formData.get("status") || "");
 
-  if (!VALID_STATUSES.includes(status as any)) return { error: "Invalid status." };
+ if (!VALID_STATUSES.includes(status as any)) {
+    redirect(`/admin/orders/${orderId}`);
+  }
 
   await prisma.order.update({ where: { id: orderId }, data: { status: status as any } });
   await prisma.activityLog.create({
