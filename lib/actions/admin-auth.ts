@@ -27,7 +27,7 @@ export async function setupFirstAdmin(_prevState: { error: string } | undefined,
   redirect("/admin/login?setup=done");
 }
 
-export async function loginAdmin(_prevState: { error: string }, formData: FormData) {
+export async function loginAdmin(_prevState: { error: string } | undefined, formData: FormData) {
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
 
